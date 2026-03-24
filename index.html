@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supabase Secret Chat</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app-container">
+    
+    <div id="landing-view" class="view-container">
+      <div class="card">
+        <h1 class="app-title">Supabase Chat</h1>
+        <p class="app-desc">Secure, real-time messaging powered by PostgreSQL.</p>
+        
+        <div class="tabs">
+          <button id="tab-join" class="tab active">Join Room</button>
+          <button id="tab-create" class="tab">Create Room</button>
+        </div>
+
+        <form id="form-join" class="form-panel">
+          <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="join-username" placeholder="Your name" required />
+          </div>
+          <div class="input-group">
+            <label>Room Referral Code</label>
+            <input type="text" id="join-code" placeholder="ABC123" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Enter Chatroom</button>
+          <p id="join-error" class="error-msg hidden"></p>
+        </form>
+
+        <form id="form-create" class="form-panel hidden">
+          <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="create-username" placeholder="Your name" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Generate New Room</button>
+          <p id="create-error" class="error-msg hidden"></p>
+        </form>
+      </div>
+    </div>
+
+    <div id="chat-view" class="view-container hidden">
+      <div class="chat-container">
+        <header class="chat-header">
+          <div class="header-info">
+            <h2 id="room-code-display">Room: -----</h2>
+            <p id="current-user-display">You: user</p>
+          </div>
+          <div class="header-actions">
+            <button id="btn-copy-link" class="btn btn-secondary btn-sm">Copy Link</button>
+            <button id="btn-leave" class="btn btn-danger btn-sm">Leave</button>
+          </div>
+        </header>
+
+        <main id="messages-list" class="messages-list"></main>
+
+        <footer class="chat-footer">
+          <div id="upload-indicator" class="upload-indicator hidden">Uploading to Supabase...</div>
+          <form id="form-message" class="message-form">
+            <label for="file-input" class="file-label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </label>
+            <input type="file" id="file-input" accept="image/*,video/*" class="hidden" />
+            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
+            <button type="submit" id="btn-send" class="btn btn-primary btn-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </form>
+          <div id="file-preview-name" class="file-preview-name hidden">
+            <span></span>
+            <button type="button" id="btn-clear-file">&times;</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
