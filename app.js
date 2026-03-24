@@ -55,20 +55,12 @@ function switchTab(type) {
 async function handleCreate(e) {
   e.preventDefault();
   const user = document.getElementById('create-username').value.trim();
-  
-  // Generate a random 6-character room code
   const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
   
-  // Try to insert the new room into Supabase
-  const { data, error } = await supabase.from('rooms').insert([{ code: roomCode, creator: user }]);
+  // In Supabase, we "upsert" the room
+  const { error } = await supabase.from('rooms').insert([{ code: roomCode, creator: user }]);
+  if (error) return alert("Error creating room");
   
-  // If there is an error, show exactly what the database complained about
-  if (error) {
-    console.error("Supabase Database Error:", error);
-    return alert("Error creating room: " + error.message);
-  }
-  
-  // If successful, start the chat!
   startChat(user, roomCode);
 }
 
@@ -155,31 +147,14 @@ function renderMessage(msg) {
   const div = document.createElement('div');
   div.className = `message-wrapper ${isMe ? 'me' : 'other'}`;
   
-  // Create the Media HTML only if a URL exists
-  let mediaHtml = '';
-  if (msg.media_url) {
-    if (msg.media_type === 'video') {
-      mediaHtml = `<div class="message-media"><video src="${msg.media_url}" controls style="max-width:100%; border-radius:8px;"></video></div>`;
-    } else {
-      // Added an 'onerror' to help you debug if the link is broken
-      mediaHtml = `
-        <div class="message-media">
-          <img src="${msg.media_url}" 
-               style="max-width:100%; border-radius:8px;" 
-               onerror="this.onerror=null; this.src='https://placehold.co/200?text=Image+Load+Error';" />
-        </div>`;
-    }
-  }
-
   div.innerHTML = `
     <div class="message-sender">${msg.username}</div>
     <div class="message-bubble">
-      ${mediaHtml}
+      ${msg.media_url ? (msg.media_type === 'video' ? `<video src="${msg.media_url}" controls></video>` : `<img src="${msg.media_url}" />`) : ''}
       <p>${msg.content || ''}</p>
       <span class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
     </div>
   `;
-  
   messagesList.appendChild(div);
   messagesList.scrollTop = messagesList.scrollHeight;
 }
